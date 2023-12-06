@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Business.Abstract;
 using Business.Concrete;
-using Castle.DynamicProxy;
+using Core.Utilities.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 
@@ -17,7 +17,11 @@ public class AutofacBusinessModule : Module
         builder.RegisterType<SatelliteDal>().As<ISatelliteDal>().SingleInstance();
         builder.RegisterType<SatelliteManager>().As<ISatelliteService>().SingleInstance();
 
+        builder.RegisterType<AuthManager>().As<IAuthService>();
+        builder.RegisterType<JwtHelper>().As<ITokenHelper>();
+
         var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+
     }
     
 }

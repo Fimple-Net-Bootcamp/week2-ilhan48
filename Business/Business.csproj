@@ -8,7 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="7.1.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="7.1.0" />
     <PackageReference Include="Castle.Core" Version="5.1.1" />
+    <PackageReference Include="Castle.DynamicProxy" Version="2.2.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
   </ItemGroup>
 

@@ -1,5 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Concrete;
+using Castle.DynamicProxy;
+using Core.Utilities.JWT;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,5 +16,10 @@ public static class BusinessServiceRegistration
         services.AddScoped<ISatelliteService, SatelliteManager>();
         services.AddScoped<IUserDal, UserDal>();
         services.AddScoped<ISatelliteDal, SatelliteDal>();
+        services.AddScoped<IAuthService, AuthManager>();
+
+        
+
+
     }
 }
