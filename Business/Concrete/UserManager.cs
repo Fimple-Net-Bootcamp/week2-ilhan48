@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.Hashing;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.DTOs;
