@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Core.Entities.Concrete;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.DTOs;
 using System;
@@ -14,43 +15,69 @@ public class UserManager : IUserService
 {
     IUserDal _userDal;
 
-    public UserManager(IUserDal userDal)
+    public UserManager(IUserDal userDAL)
     {
-        _userDal = userDal;
+        _userDAL = userDAL;
     }
 
-    public void Add(User user)
+    public IDataResult<User> GetById(int userId)
     {
-        throw new NotImplementedException();
+        return new SuccessDataResult<User>(_userDal.Get(u => u.Id == userId));
     }
 
-    public void Delete(User user)
+    public IDataResult<List<OperationClaim>> GetClaims(User user)
     {
-        throw new NotImplementedException();
+        return new SuccessDataResult<List<OperationClaim>>(_userDal.GetClaims(user));
     }
 
-    public void EditProfile(UserForUpdateDto user)
+    public IResult Add(User user)
     {
-        throw new NotImplementedException();
+        _userDal.Add(user);
+        return new SuccessResult();
     }
 
-    public List<User> GetAll()
+    public IResult Update(User user)
     {
-        throw new NotImplementedException();
+        _userDal.Update(user);
+        return new SuccessResult();
+
     }
 
-    public User GetById(Guid id)
+    public IResult EditProfile(UserForUpdateDto user)
     {
-        throw new NotImplementedException();
+        byte[] passwordHash;
+        byte[] passwordSalt;
+
+        HashingHelper.CreatePasswordHash(user.Password, out passwordHash, out passwordSalt);
+
+        var userInfo = new User()
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
+            PasswordHash = passwordHash,
+            PasswordSalt = passwordSalt,
+            Status = true
+        };
+
+        _userDAL.Update(userInfo);
+        return new SuccessResult();
     }
 
-    public User GetByMail(string mail)
+    public IResult Delete(User user)
     {
-        throw new NotImplementedException();
+        _userDal.Delete(user);
+        return new SuccessResult();
     }
 
-    public void Update(User user)
+    public IDataResult<List<User>> GetAll()
     {
-        throw new NotImplementedException();
+        return new SuccessDataResult<List<User>>(_userDal.GetAll());
+    }
+
+    public IDataResult<User> GetByMail(string email)
+    {
+        return new SuccessDataResult<User>(_userDal.Get(u => u.Email == email));
     }
 }

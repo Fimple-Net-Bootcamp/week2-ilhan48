@@ -1,4 +1,5 @@
 ﻿using Core.Entities.Concrete;
+using Core.Utilities.Results;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,13 @@ namespace Business.Abstract;
 
 public interface IUserService
 {
-    void Add(User user);
-    void Update(User user);
-    void Delete(User user);
-    List<User> GetAll();
-    User GetById(Guid id);
-    User GetByMail(string mail);
-    void EditProfile(UserForUpdateDto user);
+    IResult Add(User user);
+    IResult Update(User user);
+    IResult Delete(User user);
+    IDataResult<List<User>> GetAll();
+    IDataResult<User> GetById(int userId);
+    IDataResult<List<OperationClaim>> GetClaims(User user);
+    IDataResult<User> GetByMail(string email);
+    IResult EditProfile(UserForUpdateDto user);
 
 }
