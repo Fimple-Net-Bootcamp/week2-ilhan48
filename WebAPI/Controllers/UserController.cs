@@ -28,7 +28,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("getbyid")]
-    public IActionResult GetById(int id)
+    public IActionResult GetById(Guid id)
     {
         var result = _userService.GetById(id);
         if (result.Success)

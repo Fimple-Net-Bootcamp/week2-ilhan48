@@ -3,11 +3,6 @@ using Core.Entities.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Business.Concrete;
 
@@ -17,10 +12,10 @@ public class UserManager : IUserService
 
     public UserManager(IUserDal userDAL)
     {
-        _userDAL = userDAL;
+        _userDal = userDAL;
     }
 
-    public IDataResult<User> GetById(int userId)
+    public IDataResult<User> GetById(Guid userId)
     {
         return new SuccessDataResult<User>(_userDal.Get(u => u.Id == userId));
     }
@@ -61,7 +56,7 @@ public class UserManager : IUserService
             Status = true
         };
 
-        _userDAL.Update(userInfo);
+        _userDal.Update(userInfo);
         return new SuccessResult();
     }
 
