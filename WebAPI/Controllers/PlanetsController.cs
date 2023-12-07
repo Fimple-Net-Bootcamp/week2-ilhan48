@@ -85,9 +85,9 @@ public class PlanetsController : ControllerBase
 
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery] string name, string sortOrder)
+    public IActionResult GetAll([FromQuery] string sortBy, string sortOrder, int page, int size)
     {
-        var result = _planetService.GetAll(name, sortOrder);
+        var result = _planetService.GetAll(sortBy, sortOrder, page, size);
         if (result.Success)
         {
             return Ok(result);

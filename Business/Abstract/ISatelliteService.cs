@@ -6,7 +6,7 @@ namespace Business.Abstract;
 
 public interface ISatelliteService
 {
-    IDataResult<List<Satellite>> GetAll(string filterParam, string sortOrder);
+    IDataResult<List<Satellite>> GetAll(string filterParam, string sortOrder, int page, int size);
     IDataResult<Satellite> GetById(int id);
     IResult Add(SatelliteAddDto satelliteAddDto);
     IResult Update(Satellite satellite);

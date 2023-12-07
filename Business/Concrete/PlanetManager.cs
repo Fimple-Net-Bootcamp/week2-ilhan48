@@ -64,41 +64,17 @@ public class PlanetManager : IPlanetService
         return new SuccessResult();
     }
 
-    public IDataResult<List<Planet>> GetAll(string filterParam, string sortOrder)
+    public IDataResult<List<Planet>> GetAll(string sortBy, string sortOrder, int page, int size)
     {
         var planets = _planetDal.GetAll();
 
-        if (!string.IsNullOrEmpty(filterParam))
+        if (!string.IsNullOrEmpty(sortBy) && !string.IsNullOrEmpty(sortOrder))
         {
-            planets = planets.Where(item => item.Name.Equals(filterParam, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (planets.Count == 0)
-            {
-                return new ErrorDataResult<List<Planet>>(Messages.NoMatchingContent);
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(sortOrder) || sortOrder.ToLower() == "asc")
-                {
-                    planets = planets.OrderBy(item => item.Name).ToList();
-                }
-                else if (sortOrder.ToLower() == "desc")
-                {
-                    planets = planets.OrderByDescending(item => item.Name).ToList();
-                }
-                else
-                {
-                    planets = planets.OrderBy(item => item.Name).ToList();
-                }
-
-                return new SuccessDataResult<List<Planet>>(planets);
-            }
-            
+            planets = SortAndPagePlanets(planets, sortBy, sortOrder, page, size);
         }
 
-        return new ErrorDataResult<List<Planet>>(Messages.NullValue);
-
+        return new SuccessDataResult<List<Planet>>(planets);
     }
-
     //public IDataResult<List<Planet>> GetAll()
     //{
     //    return new SuccessDataResult<List<Planet>>(_planetDal.GetAll());
@@ -117,5 +93,33 @@ public class PlanetManager : IPlanetService
     public IDataResult<List<PlanetDetailDto>> GetPlanetsDetails()
     {
         return new SuccessDataResult<List<PlanetDetailDto>>(_planetDal.GetDetails());
+    }
+
+    private List<Planet> SortAndPagePlanets(List<Planet> planets, string sortBy, string sortOrder, int page, int size)
+    {
+        var property = typeof(Planet).GetProperty(sortBy);
+
+        if (property == null)
+        {
+            throw new ArgumentException($"Invalid property name: {sortBy}");
+        }
+
+        if (sortOrder.ToLower() == "asc")
+        {
+            planets = planets.OrderBy(item => property.GetValue(item, null)).ToList();
+        }
+        else if (sortOrder.ToLower() == "desc")
+        {
+            planets = planets.OrderByDescending(item => property.GetValue(item, null)).ToList();
+        }
+        else
+        {
+            throw new ArgumentException($"Invalid sort order: {sortOrder}");
+        }
+
+        var totalCount = planets.Count;
+        planets = planets.Skip((page - 1) * size).Take(size).ToList();
+
+        return planets;
     }
 }
