@@ -6,7 +6,8 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.PlanetDtos;
+using System.Numerics;
 
 namespace Business.Concrete;
 
@@ -14,19 +15,33 @@ public class PlanetManager : IPlanetService
 {
     IPlanetDal _planetDal;
     public PlanetManager(IPlanetDal planetDal)
-    {
+    { 
         _planetDal = planetDal;
     }
-    public IResult Add(Planet planet)
+    public IResult Add(PlanetAddDto planet)
     {
-        _planetDal.Add(planet);
+        var planetToAdd = new Planet
+        {
+            Id = 0, // Database iterate automatic so I pass default value
+            Name = planet.Name,
+            SatelliteId = planet.SatelliteId,
+            Weather = planet.Weather,
+            
+        };
+        _planetDal.Add(planetToAdd);
         return new SuccessResult();
     }
 
-    public IResult Delete(Planet planet)
+    public IResult Delete(PlanetDeleteDto planetDeleteDto)
     {
-        _planetDal.Delete(planet);
-        return new SuccessResult();
+        var selectedPlanet = _planetDal.Get(p => p.Id == planetDeleteDto.Id);
+        if (selectedPlanet != null)
+        {
+            _planetDal.Delete(selectedPlanet);
+            return new SuccessResult();
+        }
+        else { return new ErrorResult(); }
+       
     }
 
     public IResult Update(Planet planet)

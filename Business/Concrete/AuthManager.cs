@@ -5,7 +5,7 @@ using Core.Entities.Concrete;
 using Core.Utilities.Hashing;
 using Core.Utilities.JWT;
 using Core.Utilities.Results;
-using Entities.DTOs;
+using Entities.DTOs.UserDtos;
 using AccessToken = Core.Utilities.JWT.AccessToken;
 
 namespace Business.Concrete;

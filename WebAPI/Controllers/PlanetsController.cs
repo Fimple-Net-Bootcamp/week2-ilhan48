@@ -2,7 +2,7 @@
 using Business.Constants;
 using Core.Utilities.Results;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.PlanetDtos;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,7 @@ public class PlanetsController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Add(Planet planet)
+    public IActionResult Add(PlanetAddDto planet)
     {
         var result = _planetService.Add(planet);
         if (result.Success) 
@@ -30,7 +30,7 @@ public class PlanetsController : ControllerBase
     }
 
     [HttpDelete]
-    public IActionResult Delete(Planet planet) 
+    public IActionResult Delete(PlanetDeleteDto planet) 
     {
         var result = _planetService.Delete(planet);
         if (result.Success)

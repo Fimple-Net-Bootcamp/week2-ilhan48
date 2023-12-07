@@ -2,7 +2,7 @@
 using DataAccess.Abstract;
 using DataAccess.Concrete.Context;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.PlanetDtos;
 using System.Linq.Expressions;
 
 namespace DataAccess.Concrete;

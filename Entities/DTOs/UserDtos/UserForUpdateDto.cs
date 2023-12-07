@@ -1,6 +1,6 @@
 ﻿using Core.Entities.Abstract;
 
-namespace Entities.DTOs;
+namespace Entities.DTOs.UserDtos;
 
 public class UserForUpdateDto : IDto
 {

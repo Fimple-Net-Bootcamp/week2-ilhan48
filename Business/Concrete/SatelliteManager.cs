@@ -5,34 +5,47 @@ using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.SatelliteDtos;
 using Microsoft.Data.SqlClient;
+using System.Numerics;
 
 namespace Business.Concrete;
 
 public class SatelliteManager : ISatelliteService
 {
-    readonly ISatelliteDal _stalliteDal;
+    readonly ISatelliteDal _satelliteDal;
     public SatelliteManager(ISatelliteDal satelliteDal)
     {
-        _stalliteDal = satelliteDal;
+        _satelliteDal = satelliteDal;
     }
     [SecuredOperation("satellite.add, Admin")]
-    public IResult Add(Satellite satellite)
+    public IResult Add(SatelliteAddDto satelliteAddDto)
     {
-        _stalliteDal.Add(satellite);
+        var satelliteToAdd = new Satellite
+        {
+            Id = 0, // Database iterate automatic so I pass default value
+            Name = satelliteAddDto.Name
+
+        };
+        _satelliteDal.Add(satelliteToAdd);
         return new SuccessResult();
     }
 
-    public IResult Delete(Satellite satellite)
+    public IResult Delete(SatelliteDeleteDto satelliteDeleteDto)
     {
-        _stalliteDal.Delete(satellite);
-        return new SuccessResult();
+        var selectedSatellite = _satelliteDal.Get(p => p.Id == satelliteDeleteDto.Id);
+        if (selectedSatellite != null)
+        {
+            _satelliteDal.Delete(selectedSatellite);
+            return new SuccessResult();
+        }
+        else { return new ErrorResult(); }
+
     }
 
     public IDataResult<List<Satellite>> GetAll(string filterParam, string sortOrder)
     {
-        var satellites = _stalliteDal.GetAll();
+        var satellites = _satelliteDal.GetAll();
 
         if (!string.IsNullOrEmpty(filterParam))
         {
@@ -66,14 +79,14 @@ public class SatelliteManager : ISatelliteService
 
     public IDataResult<Satellite> GetById(int id)
     {
-        var getById = _stalliteDal.Get(satellite => satellite.Id == id);
+        var getById = _satelliteDal.Get(satellite => satellite.Id == id);
         return new SuccessDataResult<Satellite>(getById);
     }
 
 
     public IResult Update(Satellite satellite)
     {
-        _stalliteDal.Update(satellite);
+        _satelliteDal.Update(satellite);
         return new SuccessResult();
     }
 
@@ -88,7 +101,7 @@ public class SatelliteManager : ISatelliteService
             
         };
 
-        _stalliteDal.Update(satelliteInfo);
+        _satelliteDal.Update(satelliteInfo);
         return new SuccessResult();
     }
 }

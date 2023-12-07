@@ -3,11 +3,10 @@ using Business.BusinessAspect;
 using Business.Constants;
 using Core.Entities.Concrete;
 using Core.Utilities.Hashing;
+using Core.Utilities.Paging;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
-using Entities.Concrete;
-using Entities.DTOs;
-using Microsoft.Data.SqlClient;
+using Entities.DTOs.UserDtos;
 
 namespace Business.Concrete;
 
@@ -72,16 +71,14 @@ public class UserManager : IUserService
         return new SuccessResult();
     }
 
-    public IDataResult<List<User>> GetAll(bool status, string sortOrder)
+    public IDataResult<PagedList<User>> GetAll(bool status, string sortOrder, int page = 1, int size = 10)
     {
         var users = _userDal.GetAll();
-
-
         users = users.Where(item => item.Status == status).ToList();
 
         if (users.Count == 0)
         {
-            return new ErrorDataResult<List<User>>(Messages.NoMatchingContent);
+            return new ErrorDataResult<PagedList<User>>(Messages.NoMatchingContent);
         }
 
         if (string.IsNullOrEmpty(sortOrder) || sortOrder.ToLower() == "asc")
@@ -97,8 +94,39 @@ public class UserManager : IUserService
             users = users.OrderBy(item => item.FirstName).ToList();
         }
 
-        return new SuccessDataResult<List<User>>(users);
+        var pagedUsers = PagedList<User>.Create(users, page, size);
+
+        return new SuccessDataResult<PagedList<User>>(pagedUsers);
     }
+
+    //public IDataResult<List<User>> GetAll(bool status, string sortOrder)
+    //{
+    //    var users = _userDal.GetAll();
+
+
+    //    users = users.Where(item => item.Status == status).ToList();
+
+    //    if (users.Count == 0)
+    //    {
+    //        return new ErrorDataResult<List<User>>(Messages.NoMatchingContent);
+    //    }
+
+    //    if (string.IsNullOrEmpty(sortOrder) || sortOrder.ToLower() == "asc")
+    //    {
+    //        users = users.OrderBy(item => item.FirstName).ToList();
+    //    }
+    //    else if (sortOrder.ToLower() == "desc")
+    //    {
+    //        users = users.OrderByDescending(item => item.FirstName).ToList();
+    //    }
+    //    else
+    //    {
+    //        users = users.OrderBy(item => item.FirstName).ToList();
+    //    }
+
+
+    //    return new SuccessDataResult<List<User>>(users);
+    //}
 
 
     public IDataResult<User> GetByMail(string email)

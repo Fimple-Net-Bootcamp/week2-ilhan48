@@ -1,6 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.SatelliteDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Satellite satellite)
+        public IActionResult Add(SatelliteAddDto satellite)
         {
             var result = _satelliteService.Add(satellite);
 
@@ -42,7 +42,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpDelete]
-        public IActionResult Delete(Satellite satellite)
+        public IActionResult Delete(SatelliteDeleteDto satellite)
         {
             var result = _satelliteService.Delete(satellite);
 

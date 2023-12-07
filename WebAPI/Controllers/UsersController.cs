@@ -1,7 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Core.Entities.Concrete;
-using Entities.DTOs;
+using Entities.DTOs.UserDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -88,15 +88,26 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAll([FromQuery] bool status, string sortOrder)
+    public IActionResult GetAll([FromQuery] bool status, string sortOrder, int page = 1, int size = 10)
     {
-        var result = _userService.GetAll(status, sortOrder);
+        var result = _userService.GetAll(status, sortOrder, page, size);
         if (result.Success)
         {
             return Ok(result);
         }
         return BadRequest(result);
     }
+
+    //[HttpGet]
+    //public IActionResult GetAll([FromQuery] bool status, string sortOrder)
+    //{
+    //    var result = _userService.GetAll(status, sortOrder);
+    //    if (result.Success)
+    //    {
+    //        return Ok(result);
+    //    }
+    //    return BadRequest(result);
+    //}
 
     [HttpGet("getbyid/{id}")]
     public IActionResult GetById(Guid id)
