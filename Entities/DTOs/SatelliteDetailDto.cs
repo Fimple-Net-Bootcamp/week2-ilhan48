@@ -2,7 +2,7 @@
 
 namespace Entities.DTOs;
 
-public class SatelliteWeatherDto : IDto
+public class SatelliteDetailDto : IDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

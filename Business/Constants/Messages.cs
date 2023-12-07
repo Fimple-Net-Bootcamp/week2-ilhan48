@@ -1,4 +1,6 @@
-﻿namespace Business.Constants;
+﻿using Entities.Concrete;
+
+namespace Business.Constants;
 
 public static class Messages
 {
@@ -13,4 +15,8 @@ public static class Messages
     public static string LoginSuccess = "Successfully";
 
     public static string AuthorizationDenied = "Authorization Denied";
+
+    public static string NoMatchingContent = "No Matching Content";
+
+    public static string NullValue = "Null Value";
 }

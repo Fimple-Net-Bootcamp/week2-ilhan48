@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using Entities.Concrete;
+using Entities.DTOs;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -34,7 +38,7 @@ public class PlanetsController : ControllerBase
             return NoContent();
         }
         return BadRequest(result);
-    }
+    }   
 
     [HttpPut]
     public IActionResult Update(Planet planet)
@@ -47,13 +51,50 @@ public class PlanetsController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpGet]
-    public IActionResult GetAll()
+    [HttpPatch("editplanet/{id}")]
+    public IActionResult PatchProfile(int id, [FromBody] JsonPatchDocument<PlanetDetailDto> patchDocument)
     {
-        var result = _planetService.GetAll();
+        if (patchDocument == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userFromRepo = _planetService.GetById(id);
+        if (userFromRepo == null)
+        {
+            return NotFound();
+        }
+
+        var planetToPatch = new PlanetDetailDto();
+
+        patchDocument.ApplyTo(planetToPatch, (Microsoft.AspNetCore.JsonPatch.JsonPatchError err) => ModelState.AddModelError("JsonPatch", err.ErrorMessage));
+
+        if (!TryValidateModel(planetToPatch))
+        {
+            return BadRequest(ModelState);
+        }
+
+        var result = _planetService.EditPlanet(planetToPatch);
         if (result.Success)
         {
             return Ok(result);
+        }
+
+        return BadRequest(result);
+    }
+
+
+    [HttpGet]
+    public IActionResult GetAll([FromQuery] string name, string sortOrder)
+    {
+        var result = _planetService.GetAll(name, sortOrder);
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+        else if (result.Message == Messages.NoMatchingContent)
+        {
+            return NotFound();
         }
         return BadRequest(result);
     }

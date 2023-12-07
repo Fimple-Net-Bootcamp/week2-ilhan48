@@ -9,8 +9,9 @@ public interface IPlanetService
     IResult Add(Planet planet);
     IResult Delete(Planet planet);
     IResult Update(Planet planet);
-    IDataResult<List<Planet>> GetAll();
+    IDataResult<List<Planet>> GetAll(string filterParam, string sortOrder);
     IDataResult<Planet> GetById(int id);
     IDataResult<PlanetDetailDto> GetPlanetDetails(int id);
     IDataResult<List<PlanetDetailDto>> GetPlanetsDetails();
+    IResult EditPlanet(PlanetDetailDto planet);
 }

@@ -1,7 +1,9 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -15,39 +17,6 @@ namespace WebAPI.Controllers
         public SatellitesController(ISatelliteService satelliteService)
         {
             _satelliteService = satelliteService;
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var result = _satelliteService.GetAll();
-
-            if (!result.Success)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
-        {
-            var result = _satelliteService.GetById(id);
-
-            if (!result.Success)
-                return BadRequest(result);
-
-            return Ok(result);
-        }
-
-        [HttpGet("getdetails")]
-        public IActionResult GetCarDetails()
-        {
-            var result = _satelliteService.GetDetails();
-
-            if (!result.Success)
-                return BadRequest(result);
-
-            return Ok(result);
         }
 
         [HttpPost]
@@ -81,6 +50,60 @@ namespace WebAPI.Controllers
                 return BadRequest(result);
 
             return NoContent();
+        }
+
+        [HttpPatch("editsatellite/{id}")]
+        public IActionResult PatchProfile(int id, [FromBody] JsonPatchDocument<SatelliteDetailDto> patchDocument)
+        {
+            if (patchDocument == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var satelliteFromRepo = _satelliteService.GetById(id);
+            if (satelliteFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            var satelliteToPatch = new SatelliteDetailDto();
+
+            patchDocument.ApplyTo(satelliteToPatch, (Microsoft.AspNetCore.JsonPatch.JsonPatchError err) => ModelState.AddModelError("JsonPatch", err.ErrorMessage));
+
+            if (!TryValidateModel(satelliteToPatch))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _satelliteService.EditSatellite(satelliteToPatch);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetAll([FromQuery] string name, string sortOrder)
+        {
+            var result = _satelliteService.GetAll(name, sortOrder);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpGet("getbyid")]
+        public IActionResult GetById(int id)
+        {
+            var result = _satelliteService.GetById(id);
+
+            if (!result.Success)
+                return BadRequest(result);
+
+            return Ok(result);
         }
     
     }

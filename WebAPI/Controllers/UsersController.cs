@@ -3,6 +3,7 @@ using Business.Constants;
 using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
@@ -17,29 +18,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("getall")]
-    public IActionResult GetAll()
-    {
-        var result = _userService.GetAll();
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
-    }
-
-    [HttpGet("getbyid")]
-    public IActionResult GetById(Guid id)
-    {
-        var result = _userService.GetById(id);
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
-    }
-
-    [HttpPost("add")]
+    [HttpPost]
     public IActionResult Add(User user)
     {
         var result = _userService.Add(user);
@@ -50,7 +29,7 @@ public class UsersController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost("delete")]
+    [HttpDelete]
     public IActionResult Delete(User user)
     {
         var result = _userService.Delete(user);
@@ -65,7 +44,7 @@ public class UsersController : ControllerBase
         return BadRequest(result);
     }
 
-    [HttpPost("update")]
+    [HttpPut]
     public IActionResult Update(User user)
     {
         var result = _userService.Update(user);
@@ -76,6 +55,61 @@ public class UsersController : ControllerBase
         return BadRequest(result);
     }
 
+    [HttpPatch("editprofile/{id}")]
+    public IActionResult PatchProfile(Guid id, [FromBody] JsonPatchDocument<UserForUpdateDto> patchDocument)
+    {
+        if (patchDocument == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userFromRepo = _userService.GetById(id);
+        if (userFromRepo == null)
+        {
+            return NotFound();
+        }
+
+        var userToPatch = new UserForUpdateDto(); 
+
+        patchDocument.ApplyTo(userToPatch, (Microsoft.AspNetCore.JsonPatch.JsonPatchError err) => ModelState.AddModelError("JsonPatch", err.ErrorMessage));
+
+        if (!TryValidateModel(userToPatch))
+        {
+            return BadRequest(ModelState);
+        }
+
+        var result = _userService.EditProfile(userToPatch);
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+
+        return BadRequest(result);
+    }
+
+    [HttpGet]
+    public IActionResult GetAll([FromQuery] bool status, string sortOrder)
+    {
+        var result = _userService.GetAll(status, sortOrder);
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
+
+    [HttpGet("getbyid/{id}")]
+    public IActionResult GetById(Guid id)
+    {
+        var result = _userService.GetById(id);
+        if (result.Success)
+        {
+            return Ok(result);
+        }
+        return BadRequest(result);
+    }
+
+   
     [HttpGet("getbymail")]
     public IActionResult GeyByMail(string email)
     {
@@ -86,16 +120,4 @@ public class UsersController : ControllerBase
         }
         return BadRequest(result);
     }
-
-    [HttpPost("user/edit")]
-    public IActionResult EditProfile(UserForUpdateDto user)
-    {
-        var result = _userService.EditProfile(user);
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
-    }
-
 }

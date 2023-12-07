@@ -7,6 +7,6 @@ namespace DataAccess.Abstract;
 
 public interface IPlanetDal : IEntityRepository<Planet>
 {
-    List<PlanetDetailDto> GetPlanetsDetails(Expression<Func<PlanetDetailDto, bool>> filter = null);
-    PlanetDetailDto GetPlanetDetails(int id);
+    List<PlanetDetailDto> GetDetails(Expression<Func<PlanetDetailDto, bool>> filter = null);
+    PlanetDetailDto GetDetails(int id);
 }

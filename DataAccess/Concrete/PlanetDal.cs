@@ -9,7 +9,7 @@ namespace DataAccess.Concrete;
 
 public class PlanetDal : EFEntityRepositoryBase<Planet, WeatherDbContext>, IPlanetDal
 {
-    public PlanetDetailDto GetPlanetDetails(int id)
+    public PlanetDetailDto GetDetails(int id)
     {
         using (WeatherDbContext context = new())
         {
@@ -30,7 +30,7 @@ public class PlanetDal : EFEntityRepositoryBase<Planet, WeatherDbContext>, IPlan
         }
     }
 
-    public List<PlanetDetailDto> GetPlanetsDetails(Expression<Func<PlanetDetailDto, bool>> filter = null)
+    public List<PlanetDetailDto> GetDetails(Expression<Func<PlanetDetailDto, bool>> filter = null)
     {
         using(WeatherDbContext context = new())
         {

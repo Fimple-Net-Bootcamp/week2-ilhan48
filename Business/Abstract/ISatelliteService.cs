@@ -6,10 +6,10 @@ namespace Business.Abstract;
 
 public interface ISatelliteService
 {
-    IDataResult<List<Satellite>> GetAll();
+    IDataResult<List<Satellite>> GetAll(string filterParam, string sortOrder);
     IDataResult<Satellite> GetById(int id);
-    IDataResult<List<SatelliteWeatherDto>> GetDetails();
     IResult Add(Satellite satellite);
     IResult Update(Satellite satellite);
     IResult Delete(Satellite satellite);
+    IResult EditSatellite(SatelliteDetailDto satellite);
 }

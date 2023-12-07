@@ -7,5 +7,5 @@ namespace DataAccess.Abstract;
 
 public interface ISatelliteDal : IEntityRepository<Satellite>
 {
-    List<SatelliteWeatherDto> GetDetails(Expression<Func<SatelliteWeatherDto, bool>> filter=null);
+
 }
