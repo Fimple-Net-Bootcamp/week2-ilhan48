@@ -17,9 +17,8 @@ public static class BusinessServiceRegistration
         services.AddScoped<IUserDal, UserDal>();
         services.AddScoped<ISatelliteDal, SatelliteDal>();
         services.AddScoped<IAuthService, AuthManager>();
-
-        
-
-
+        services.AddScoped<IPlanetDal, PlanetDal>();
+        services.AddScoped<IPlanetService, PlanetManager>();
+              
     }
 }

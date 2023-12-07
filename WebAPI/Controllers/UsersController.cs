@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.Constants;
 using Core.Entities.Concrete;
 using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
@@ -56,6 +57,10 @@ public class UsersController : ControllerBase
         if (result.Success)
         {
             return Ok(result);
+        }
+        if (result.Message == Messages.AuthorizationDenied)
+        {
+            return Unauthorized();
         }
         return BadRequest(result);
     }

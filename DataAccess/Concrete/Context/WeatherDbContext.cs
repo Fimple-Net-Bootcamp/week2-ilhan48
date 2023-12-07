@@ -20,4 +20,5 @@ public class WeatherDbContext : DbContext
     public DbSet<OperationClaim> OperationClaims { get; set; }
     public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
     public DbSet<Satellite> Satellites { get; set; }
+    public DbSet<Planet> Planets { get; set; }
 }

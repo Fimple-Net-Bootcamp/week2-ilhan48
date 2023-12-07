@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect;
 using Core.Entities.Concrete;
 using Core.Utilities.Hashing;
 using Core.Utilities.Results;
@@ -61,6 +62,7 @@ public class UserManager : IUserService
         return new SuccessResult();
     }
 
+    [SecuredOperation("user.delete, Admin")]
     public IResult Delete(User user)
     {
         _userDal.Delete(user);

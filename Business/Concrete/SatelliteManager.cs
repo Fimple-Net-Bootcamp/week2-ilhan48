@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -13,6 +14,7 @@ public class SatelliteManager : ISatelliteService
     {
         _stalliteDal = satelliteDal;
     }
+    [SecuredOperation("satellite.add, Admin")]
     public IResult Add(Satellite satellite)
     {
         _stalliteDal.Add(satellite);
